@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Tab Organizer Pro",
+  "name": "Tab Organizer",
   "version": "1.0.0",
   "description": "Efficiently organize and manage your browser tabs with smart grouping and customizable settings",
   "permissions": [
@@ -58,8 +58,8 @@
     ],
     "matches": ["<all_urls>"]
   }],
-  "author": "Your Name",
-  "homepage_url": "https://github.com/yourusername/tab-organizer",
+  "author": "LgSarius",
+  "homepage_url": "https://github.com/Lgsarius/tab-organiser",
   "minimum_chrome_version": "88",
   "offline_enabled": true,
   "incognito": "split"
