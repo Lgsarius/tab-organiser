@@ -12,6 +12,12 @@ export const DEFAULT_SETTINGS = {
   groupEmptyTabs: false,    // Group empty tabs and new tabs
   smartGroups: true,        // Use smart grouping (e.g., all Google services together)
   darkMode: false,          // Dark mode theme
+  pomodoroEnabled: false,
+  pomodoroWorkDuration: 25,    // minutes
+  pomodoroBreakDuration: 5,    // minutes
+  pomodoroLongBreakDuration: 15, // minutes
+  pomodoroAutoStart: false,
+  pomodoroNotifications: true,
 };
 
 export const SMART_GROUPS = {
@@ -65,4 +71,11 @@ export const GROUP_PRESETS = {
     smartGroups: true,
     sortTabs: true
   }
+};
+
+export const POMODORO_STATES = {
+  IDLE: 'idle',
+  WORK: 'work',
+  BREAK: 'break',
+  LONG_BREAK: 'longBreak',
 }; 

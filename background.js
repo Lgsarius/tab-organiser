@@ -1,4 +1,5 @@
 import { DEFAULT_SETTINGS, SMART_GROUPS } from './constants.js';
+import { backgroundTimer } from './background-timer.js';
 
 // Cache for domain colors
 const domainColors = new Map();
@@ -24,61 +25,67 @@ chrome.tabs.onCreated.addListener(async (tab) => {
 
 // Add message listener for popup communication
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action === 'organize') {
-    organizeTabs();
+  try {
+    if (message.action === 'organize') {
+      organizeTabs();
+    } else if (message.action === 'pomodoroStart') {
+      backgroundTimer.start(message.type);
+      sendResponse({ success: true });
+    } else if (message.action === 'pomodoroPause') {
+      backgroundTimer.pause();
+      sendResponse({ success: true });
+    } else if (message.action === 'pomodoroReset') {
+      backgroundTimer.reset();
+      sendResponse({ success: true });
+    } else if (message.action === 'pomodoroUpdateSettings') {
+      backgroundTimer.updateSettings(message.settings);
+      sendResponse({ success: true });
+    }
+  } catch (error) {
+    console.error('Error handling message:', error);
+    sendResponse({ success: false, error: error.message });
   }
+  return true; // Keep the message channel open for async response
 });
 
-// Add context menu items
+// Initialize context menu
 chrome.runtime.onInstalled.addListener(() => {
+  // Create main context menu item
   chrome.contextMenus.create({
-    id: 'organize-similar',
-    title: 'Group similar tabs',
-    contexts: ['tab']
+    id: 'tabOrganizer',
+    title: 'Tab Organizer',
+    contexts: ['page'] // Use valid context value
   });
-  
+
+  // Create sub-items
   chrome.contextMenus.create({
-    id: 'ungroup-tab',
-    title: 'Ungroup this tab',
-    contexts: ['tab']
+    id: 'organizeTabs',
+    parentId: 'tabOrganizer',
+    title: 'Organize All Tabs',
+    contexts: ['page']
+  });
+
+  chrome.contextMenus.create({
+    id: 'ungroupTabs',
+    parentId: 'tabOrganizer',
+    title: 'Ungroup All Tabs',
+    contexts: ['page']
   });
 });
 
 // Handle context menu clicks
-chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-  if (info.menuItemId === 'organize-similar') {
-    try {
-      const domain = getDomainFromUrl(tab.url, false);
-      if (domain) {
-        const similarTabs = await chrome.tabs.query({ currentWindow: true });
-        const tabIds = similarTabs
-          .filter(t => {
-            try {
-              return getDomainFromUrl(t.url, false) === domain;
-            } catch (e) {
-              return false;
-            }
-          })
-          .map(t => t.id);
-        
-        if (tabIds.length > 0) {
-          const group = await chrome.tabs.group({ tabIds });
-          await chrome.tabGroups.update(group, {
-            collapsed: true,
-            title: domain,
-            color: getDomainColor(domain)
-          });
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  switch (info.menuItemId) {
+    case 'organizeTabs':
+      chrome.runtime.sendMessage({ action: 'organize' });
+      break;
+    case 'ungroupTabs':
+      chrome.tabs.query({ currentWindow: true }, (tabs) => {
+        if (tabs.length > 0) {
+          chrome.tabs.ungroup(tabs.map(tab => tab.id));
         }
-      }
-    } catch (e) {
-      console.error('Error organizing similar tabs:', e);
-    }
-  } else if (info.menuItemId === 'ungroup-tab') {
-    try {
-      await chrome.tabs.ungroup(tab.id);
-    } catch (e) {
-      console.error('Error ungrouping tab:', e);
-    }
+      });
+      break;
   }
 });
 
@@ -250,4 +257,15 @@ async function suspendInactiveGroups() {
       tabs.forEach(tab => chrome.tabs.discard(tab.id));
     }
   }
-} 
+}
+
+// Initialize background timer
+backgroundTimer.initialize();
+
+// Handle alarm events for the timer
+chrome.alarms.onAlarm.addListener((alarm) => {
+  console.log('Alarm fired:', alarm.name); // Debug log
+  if (alarm.name === 'pomodoroTick') {
+    backgroundTimer.tick();
+  }
+}); 

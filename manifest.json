@@ -7,7 +7,9 @@
     "tabs",
     "tabGroups",
     "storage",
-    "contextMenus"
+    "contextMenus",
+    "alarms",
+    "notifications"
   ],
   "optional_permissions": [
     "bookmarks"
@@ -54,6 +56,7 @@
   "web_accessible_resources": [{
     "resources": [
       "constants.js",
+      "background-timer.js",
       "icons/*.png"
     ],
     "matches": ["<all_urls>"]

@@ -268,6 +268,62 @@
       </div>
     </div>
 
+    <!-- Pomodoro Timer -->
+    <div class="p-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+      <div class="flex justify-between items-center mb-4">
+        <h5 class="text-lg font-medium text-gray-900 dark:text-white">Pomodoro Timer</h5>
+        <label class="relative inline-flex items-center cursor-pointer">
+          <input type="checkbox" id="pomodoroEnabled" class="sr-only peer">
+          <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
+          <span class="ms-3 text-sm font-medium text-gray-700 dark:text-gray-300">Enable</span>
+        </label>
+      </div>
+      
+      <div class="space-y-4">
+        <!-- Timer Display -->
+        <div class="text-center p-6 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <div id="pomodoro-time" class="text-5xl font-bold text-primary-600 dark:text-primary-500">25:00</div>
+          <div id="pomodoro-state" class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-2">Ready to Start</div>
+          <div id="pomodoro-progress" class="text-xs text-gray-400 dark:text-gray-500 mt-1">Pomodoro #1</div>
+        </div>
+
+        <!-- Timer Controls -->
+        <div class="flex justify-center gap-2">
+          <button id="pomodoro-start" class="flex items-center px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 focus:ring-4 focus:ring-green-300 transition-all">
+            <i class="fas fa-play mr-2"></i>Start
+          </button>
+          <button id="pomodoro-pause" class="flex items-center px-4 py-2 text-sm font-medium text-white bg-yellow-600 rounded-lg hover:bg-yellow-700 focus:ring-4 focus:ring-yellow-300 transition-all" disabled>
+            <i class="fas fa-pause mr-2"></i>Pause
+          </button>
+          <button id="pomodoro-reset" class="flex items-center px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 focus:ring-4 focus:ring-red-300 transition-all">
+            <i class="fas fa-stop mr-2"></i>Reset
+          </button>
+        </div>
+
+        <!-- Duration Settings -->
+        <div class="grid grid-cols-3 gap-4 mt-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Work</label>
+            <input type="number" id="pomodoroWorkDuration" min="1" max="60" 
+              class="w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white transition-colors"
+              placeholder="1-60">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Break</label>
+            <input type="number" id="pomodoroBreakDuration" min="1" max="30"
+              class="w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white transition-colors"
+              placeholder="1-30">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Long Break</label>
+            <input type="number" id="pomodoroLongBreakDuration" min="1" max="60"
+              class="w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white transition-colors"
+              placeholder="1-60">
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Statistics -->
     <div class="p-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
       <h5 class="mb-4 text-lg font-medium text-gray-900 dark:text-white">Statistics</h5>

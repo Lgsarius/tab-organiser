@@ -1,4 +1,5 @@
-import { DEFAULT_SETTINGS, SMART_GROUPS } from './constants.js';
+import { DEFAULT_SETTINGS, SMART_GROUPS, POMODORO_STATES } from './constants.js';
+import { pomodoroTimer } from './pomodoro.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
   // Initialize theme based on saved preference
@@ -6,6 +7,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadSettings();
   await updateStatistics();
   setupEventListeners();
+  await initializePomodoro();
 });
 
 async function initializeTheme() {
@@ -180,4 +182,86 @@ function showStatus(message, isError = false) {
       }, 300);
     }
   }, 2000);
+}
+
+async function initializePomodoro() {
+  try {
+    await pomodoroTimer.initialize();
+    
+    const startBtn = document.getElementById('pomodoro-start');
+    const pauseBtn = document.getElementById('pomodoro-pause');
+    const resetBtn = document.getElementById('pomodoro-reset');
+    const enabledToggle = document.getElementById('pomodoroEnabled');
+    
+    if (!startBtn || !pauseBtn || !resetBtn || !enabledToggle) {
+      console.error('Required Pomodoro elements not found');
+      return;
+    }
+
+    startBtn.addEventListener('click', () => pomodoroTimer.start());
+    pauseBtn.addEventListener('click', () => pomodoroTimer.pause());
+    resetBtn.addEventListener('click', () => pomodoroTimer.reset());
+
+    // Duration inputs
+    const workDuration = document.getElementById('pomodoroWorkDuration');
+    const breakDuration = document.getElementById('pomodoroBreakDuration');
+    const longBreakDuration = document.getElementById('pomodoroLongBreakDuration');
+
+    // Set initial values
+    if (pomodoroTimer.settings) {
+      enabledToggle.checked = pomodoroTimer.settings.pomodoroEnabled;
+      workDuration.value = pomodoroTimer.settings.pomodoroWorkDuration;
+      breakDuration.value = pomodoroTimer.settings.pomodoroBreakDuration;
+      longBreakDuration.value = pomodoroTimer.settings.pomodoroLongBreakDuration;
+    }
+
+    // Handle duration changes
+    const durationInputs = [
+      { input: workDuration, key: 'pomodoroWorkDuration' },
+      { input: breakDuration, key: 'pomodoroBreakDuration' },
+      { input: longBreakDuration, key: 'pomodoroLongBreakDuration' }
+    ];
+
+    durationInputs.forEach(({ input, key }) => {
+      if (input) {
+        input.addEventListener('change', async () => {
+          const value = parseInt(input.value, 10);
+          if (isNaN(value) || value < 1) {
+            input.value = pomodoroTimer.settings[key];
+            showStatus('Please enter a valid duration', true);
+            return;
+          }
+
+          try {
+            await pomodoroTimer.updateSettings({ [key]: value });
+            showStatus('Duration updated successfully');
+          } catch (error) {
+            console.error('Error updating duration:', error);
+            showStatus('Failed to update duration', true);
+            input.value = pomodoroTimer.settings[key];
+          }
+        });
+
+        // Add input validation
+        input.addEventListener('input', () => {
+          const value = parseInt(input.value, 10);
+          if (isNaN(value) || value < 1) {
+            input.classList.add('border-red-500');
+          } else {
+            input.classList.remove('border-red-500');
+          }
+        });
+      }
+    });
+
+    // Handle enable/disable
+    enabledToggle.addEventListener('change', async () => {
+      await pomodoroTimer.updateSettings({ pomodoroEnabled: enabledToggle.checked });
+      if (!enabledToggle.checked) {
+        pomodoroTimer.reset();
+      }
+    });
+  } catch (error) {
+    console.error('Error initializing Pomodoro:', error);
+  }
 } 
