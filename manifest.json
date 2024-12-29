@@ -59,7 +59,7 @@
     "matches": ["<all_urls>"]
   }],
   "author": "LgSarius",
-  "homepage_url": "https://github.com/Lgsarius/tab-organiser",
+  "homepage_url": "https://github.com/Lgsarius/tab-organizer",
   "minimum_chrome_version": "88",
   "offline_enabled": true,
   "incognito": "split"
