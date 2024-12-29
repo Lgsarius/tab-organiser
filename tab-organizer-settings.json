@@ -1,0 +1,14 @@
+{
+  "autoCollapse": true,
+  "autoGroup": true,
+  "colorByDomain": true,
+  "customColors": {},
+  "excludeDomains": [],
+  "groupBySubdomain": false,
+  "groupEmptyTabs": false,
+  "groupSingleTabs": false,
+  "maxGroupSize": 10,
+  "pinGroups": false,
+  "smartGroups": false,
+  "sortTabs": true
+}

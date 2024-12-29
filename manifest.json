@@ -1,0 +1,66 @@
+{
+  "manifest_version": 3,
+  "name": "Tab Organizer Pro",
+  "version": "1.0.0",
+  "description": "Efficiently organize and manage your browser tabs with smart grouping and customizable settings",
+  "permissions": [
+    "tabs",
+    "tabGroups",
+    "storage",
+    "contextMenus"
+  ],
+  "optional_permissions": [
+    "bookmarks"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Tab Organizer Pro",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "commands": {
+    "organize-tabs": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+O",
+        "mac": "Command+Shift+O"
+      },
+      "description": "Organize all tabs"
+    },
+    "ungroup-all": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+U",
+        "mac": "Command+Shift+U"
+      },
+      "description": "Ungroup all tabs"
+    }
+  },
+  "web_accessible_resources": [{
+    "resources": [
+      "constants.js",
+      "icons/*.png"
+    ],
+    "matches": ["<all_urls>"]
+  }],
+  "author": "Your Name",
+  "homepage_url": "https://github.com/yourusername/tab-organizer",
+  "minimum_chrome_version": "88",
+  "offline_enabled": true,
+  "incognito": "split"
+} 

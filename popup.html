@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              200: '#bfdbfe',
+              300: '#93c5fd',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      width: 400px;
+      max-height: 600px;
+      overflow-y: auto;
+      caret-color: transparent;
+      font-family: 'Arial', sans-serif;
+    }
+
+    /* Custom Scrollbar Styles */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 8px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 8px;
+      border: 2px solid #f1f1f1;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #a1a1a1;
+    }
+
+    /* Dark mode scrollbar */
+    .dark ::-webkit-scrollbar-track {
+      background: #1f2937;
+      border-radius: 8px;
+    }
+
+    .dark ::-webkit-scrollbar-thumb {
+      background: #4b5563;
+      border: 2px solid #1f2937;
+    }
+
+    .dark ::-webkit-scrollbar-thumb:hover {
+      background: #6b7280;
+    }
+
+    /* For nested scrollable areas */
+    .scrollable-area {
+      scrollbar-width: thin;
+      scrollbar-color: #c1c1c1 #f1f1f1;
+    }
+
+    .dark .scrollable-area {
+      scrollbar-color: #4b5563 #1f2937;
+    }
+
+    /* Theme toggle animations */
+    .dark #theme-toggle-dark-icon,
+    .dark #theme-toggle-light-icon {
+      /* Remove these styles as they're now handled by the Tailwind classes */
+    }
+
+    /* Keep the hover effect */
+    #theme-toggle:hover {
+      transform: scale(1.05);
+      transition: transform 0.2s;
+    }
+
+    #theme-toggle:active {
+      transform: scale(0.95);
+    }
+
+    #organize.loading {
+        position: relative;
+        cursor: not-allowed;
+        opacity: 0.7;
+      }
+      
+      #organize.loading::after {
+        content: '';
+        position: absolute;
+        width: 1rem;
+        height: 1rem;
+        border: 2px solid transparent;
+        border-top-color: currentColor;
+        border-radius: 50%;
+        animation: button-loading-spinner 0.75s linear infinite;
+      }
+      
+      @keyframes button-loading-spinner {
+        from {
+          transform: rotate(0turn);
+        }
+        to {
+          transform: rotate(1turn);
+        }
+      }
+  </style>
+</head>
+<body class="bg-white dark:bg-gray-900">
+  <!-- Header -->
+  <nav class="bg-primary-700 dark:bg-primary-600 px-4 py-3  top-0 z-50 shadow-lg">
+    <div class="flex justify-between items-center">
+      <h2 class="text-gray-900 dark:text-white text-lg font-semibold" id="tab-organizer-title">Tab Organizer</h2>
+      <button id="theme-toggle" type="button" 
+        class="relative inline-flex items-center justify-center w-14 h-7 bg-gray-200 dark:bg-gray-700 rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary-400 dark:focus:ring-primary-500 hover:bg-gray-300 dark:hover:bg-gray-600">
+        <div class="absolute left-1 w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-300 ease-in-out dark:translate-x-7 flex items-center justify-center">
+          <i id="theme-toggle-dark-icon" 
+            class="fas fa-moon text-gray-700 text-sm absolute transition-all duration-300 rotate-0 scale-100 dark:rotate-90 dark:scale-0"></i>
+          <i id="theme-toggle-light-icon" 
+            class="fas fa-sun text-amber-500 text-sm absolute transition-all duration-300 rotate-90 scale-0 dark:rotate-0 dark:scale-100"></i>
+        </div>
+        <span class="sr-only">Toggle dark mode</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="p-4 space-y-4">
+    <div class="p-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+      <div class="flex gap-2">
+        <button id="organize" type="button" 
+          class="flex-1 flex items-center justify-center gap-2 text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-3 transition-all duration-200 group dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800">
+          <span class="relative flex h-3 w-3">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
+          </span>
+          <span class="font-semibold">Organize All Tabs</span>
+          <i class="fas fa-layer-group text-lg opacity-90 group-hover:transform group-hover:scale-110 transition-transform"></i>
+        </button>
+        <button id="ungroup" type="button"
+          class="flex-1 flex items-center justify-center gap-2 text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-3 transition-all duration-200 group dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800">
+          <span class="font-semibold">Ungroup All</span>
+          <i class="fas fa-layer-group fa-flip-vertical text-lg opacity-90 group-hover:transform group-hover:scale-110 transition-transform"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Quick Settings -->
+    <div class="p-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+      <h5 class="mb-4 text-lg font-medium text-gray-900 dark:text-white">Quick Settings</h5>
+      <div class="space-y-4">
+        <!-- Auto-group toggle -->
+        <div class="flex flex-col gap-2">
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="autoGroup" class="sr-only peer">
+            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:bg-primary-600 dark:peer-checked:bg-primary-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600"></div>
+            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Auto-group new tabs</span>
+          </label>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Automatically organize tabs as you open them</p>
+        </div>
+
+        <!-- Group single tabs toggle -->
+        <div class="flex flex-col gap-2">
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="groupSingleTabs" class="sr-only peer">
+            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:bg-primary-600 dark:peer-checked:bg-primary-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600"></div>
+            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Include single tabs</span>
+          </label>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Create groups even for single tabs</p>
+        </div>
+
+        <!-- Max group size input -->
+        <div class="flex flex-col gap-2">
+          <label class="text-sm font-medium text-gray-900 dark:text-gray-300">Maximum tabs per group</label>
+          <input type="number" id="maxGroupSize" min="2" max="20" value="10" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-24 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
+          <p class="text-sm text-gray-500 dark:text-gray-400">Split into new groups when limit is reached</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Organization Settings -->
+    <div class="p-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+      <h5 class="mb-4 text-lg font-medium text-gray-900 dark:text-white">Organization</h5>
+      <div class="space-y-4">
+        <!-- Sort tabs toggle -->
+        <div class="flex flex-col gap-2">
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="sortTabs" class="sr-only peer">
+            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:bg-primary-600 dark:peer-checked:bg-primary-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600"></div>
+            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Sort tabs alphabetically</span>
+          </label>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Sort tabs by title within groups</p>
+        </div>
+
+        <!-- Auto-collapse toggle -->
+        <div class="flex flex-col gap-2">
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="autoCollapse" class="sr-only peer">
+            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:bg-primary-600 dark:peer-checked:bg-primary-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600"></div>
+            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Auto-collapse groups</span>
+          </label>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Automatically collapse groups after organizing</p>
+        </div>
+
+        <!-- Pin groups toggle -->
+        <div class="flex flex-col gap-2">
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="pinGroups" class="sr-only peer">
+            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:bg-primary-600 dark:peer-checked:bg-primary-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600"></div>
+            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Pin groups to left</span>
+          </label>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Move all grouped tabs to the left side</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Advanced Settings -->
+    <div class="p-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+      <h5 class="mb-4 text-lg font-medium text-gray-900 dark:text-white">Advanced Settings</h5>
+      <div class="space-y-4">
+        <!-- Group by subdomain toggle -->
+        <div class="flex flex-col gap-2">
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="groupBySubdomain" class="sr-only peer">
+            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:bg-primary-600 dark:peer-checked:bg-primary-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600"></div>
+            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Group by subdomain</span>
+          </label>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Create separate groups for subdomains</p>
+        </div>
+
+        <!-- Smart grouping toggle -->
+        <div class="flex flex-col gap-2">
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="smartGroups" class="sr-only peer">
+            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:bg-primary-600 dark:peer-checked:bg-primary-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600"></div>
+            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Smart grouping</span>
+          </label>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Group related services together</p>
+        </div>
+
+        <!-- Group empty tabs toggle -->
+        <div class="flex flex-col gap-2">
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="groupEmptyTabs" class="sr-only peer">
+            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:bg-primary-600 dark:peer-checked:bg-primary-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600"></div>
+            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Group empty tabs</span>
+          </label>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Include empty and new tabs in groups</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="p-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+      <h5 class="mb-4 text-lg font-medium text-gray-900 dark:text-white">Statistics</h5>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="text-center">
+          <div class="text-2xl font-bold text-primary-600 dark:text-primary-500" id="totalTabs">0</div>
+          <div class="text-sm text-gray-500 dark:text-gray-400">Total Tabs</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl font-bold text-primary-600 dark:text-primary-500" id="groupCount">0</div>
+          <div class="text-sm text-gray-500 dark:text-gray-400">Groups</div>
+        </div>
+        
+      </div>
+    </div>
+
+  
+
+
+  <!-- Status Toast -->
+  <div id="status" class="fixed bottom-4 left-1/2 transform -translate-x-1/2 flex items-center w-full max-w-xs p-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800 transition-opacity duration-300 opacity-0" role="alert">
+    <div class="ms-3 text-sm font-normal"></div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+  <script src="popup.js" type="module"></script>
+</body>
+</html> 
