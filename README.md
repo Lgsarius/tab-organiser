@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Tab Organizer Logo](icon48.png)
+![Tab Organizer Logo](icon16.png)
 
 A powerful Chrome extension for efficiently organizing and managing your browser tabs with smart grouping and customizable settings.
 
@@ -55,4 +55,3 @@ Tab Organizer respects your privacy:
 2. Click "Add to Chrome"
 3. Configure your preferences via the extension popup
 
-## 💻 Development
