@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Tab Organizer Logo](icon16.png)
+![Tab Organizer Logo](icons/icon16.png)
 
 A powerful Chrome extension for efficiently organizing and managing your browser tabs with smart grouping and customizable settings.
 
