@@ -126,7 +126,7 @@
 </head>
 <body class="bg-white dark:bg-gray-900">
   <!-- Header -->
-  <nav class="bg-primary-700 dark:bg-primary-600 px-4 py-3  top-0 z-50 shadow-lg">
+  <nav class="bg-white dark:bg-gray-900 px-4 py-3 sticky top-0 z-50 shadow-lg">
     <div class="flex justify-between items-center">
       <h2 class="text-gray-900 dark:text-white text-lg font-semibold" id="tab-organizer-title">Tab Organizer</h2>
       <button id="theme-toggle" type="button" 
@@ -195,6 +195,9 @@
         </div>
       </div>
     </div>
+
+  
+    
 
     <!-- Organization Settings -->
     <div class="p-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
@@ -348,6 +351,29 @@
           <div class="text-sm text-gray-500 dark:text-gray-400">Groups</div>
         </div>
         
+      </div>
+    </div>
+
+    <!-- Add this after the Statistics section -->
+    <div class="p-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+      <h5 class="mb-4 text-lg font-medium text-gray-900 dark:text-white">Group Analytics</h5>
+      <div class="space-y-4">
+        <div class="grid grid-cols-2 gap-4">
+          <div class="text-center p-3 bg-gray-50 rounded-lg dark:bg-gray-700">
+            <div class="text-2xl font-bold text-primary-600 dark:text-primary-500" id="averageGroupSize">0</div>
+            <div class="text-sm text-gray-500 dark:text-gray-400">Avg. Group Size</div>
+          </div>
+          <div class="text-center p-3 bg-gray-50 rounded-lg dark:bg-gray-700">
+            <div class="text-2xl font-bold text-primary-600 dark:text-primary-500" id="totalDomains">0</div>
+            <div class="text-sm text-gray-500 dark:text-gray-400">Unique Domains</div>
+          </div>
+        </div>
+        <div id="groupSuggestions" class="hidden mt-4">
+          <h6 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Suggested Groups</h6>
+          <div id="suggestionsList" class="space-y-2">
+            <!-- Suggestions will be inserted here -->
+          </div>
+        </div>
       </div>
     </div>
 

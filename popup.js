@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   await updateStatistics();
   setupEventListeners();
   await initializePomodoro();
+  await updateAnalytics();
 });
 
 async function initializeTheme() {
@@ -74,6 +75,36 @@ function setupEventListeners() {
   // Ungroup button
   const ungroupButton = document.getElementById('ungroup');
   ungroupButton.addEventListener('click', handleUngroup);
+
+  // Setup template buttons
+  document.querySelectorAll('[data-template]').forEach(button => {
+    button.addEventListener('click', () => {
+      chrome.runtime.sendMessage({ 
+        action: 'createGroupFromTemplate', 
+        template: button.dataset.template 
+      });
+    });
+  });
+
+  // Setup undo button
+  document.getElementById('undo-ungroup').addEventListener('click', async () => {
+    await chrome.runtime.sendMessage({ action: 'undoUngroup' });
+    updateStatistics();
+  });
+
+  // Setup archive button
+  document.getElementById('archive-inactive').addEventListener('click', async () => {
+    if (confirm('Archive inactive groups? This will save them as bookmarks and close the tabs.')) {
+      await chrome.runtime.sendMessage({ action: 'archiveInactive' });
+      updateStatistics();
+    }
+  });
+
+  // Setup search
+  setupSearchFilter();
+
+  // Setup keyboard shortcuts
+  setupKeyboardShortcuts();
 }
 
 async function handleOrganize() {
@@ -263,5 +294,72 @@ async function initializePomodoro() {
     });
   } catch (error) {
     console.error('Error initializing Pomodoro:', error);
+  }
+}
+
+function setupSearchFilter() {
+  const searchInput = document.getElementById('tab-search');
+  searchInput.addEventListener('input', async () => {
+    const query = searchInput.value.toLowerCase();
+    const tabs = await chrome.tabs.query({ currentWindow: true });
+    
+    tabs.forEach(tab => {
+      const tabElement = document.querySelector(`[data-tab-id="${tab.id}"]`);
+      if (tabElement) {
+        const matches = tab.title.toLowerCase().includes(query) || 
+                       tab.url.toLowerCase().includes(query);
+        tabElement.style.display = matches ? 'block' : 'none';
+      }
+    });
+  });
+}
+
+// Add keyboard shortcuts
+document.addEventListener('keydown', async (e) => {
+  // Ctrl/Cmd + Shift + Number to switch to group
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && /^[1-9]$/.test(e.key)) {
+    const groups = await chrome.tabGroups.query({ windowId: chrome.windows.WINDOW_ID_CURRENT });
+    const index = parseInt(e.key) - 1;
+    if (groups[index]) {
+      const tabs = await chrome.tabs.query({ groupId: groups[index].id });
+      if (tabs.length > 0) {
+        await chrome.tabs.update(tabs[0].id, { active: true });
+      }
+    }
+  }
+});
+
+// Add this function to update analytics
+async function updateAnalytics() {
+  try {
+    const stats = await chrome.runtime.sendMessage({ action: 'getGroupStatistics' });
+    
+    document.getElementById('averageGroupSize').textContent = 
+      stats.averageGroupSize.toFixed(1);
+    document.getElementById('totalDomains').textContent = 
+      Object.keys(stats.domainFrequency).length;
+
+    // Update suggestions if available
+    const suggestions = await chrome.runtime.sendMessage({ action: 'getGroupSuggestions' });
+    const suggestionsList = document.getElementById('suggestionsList');
+    const suggestionsContainer = document.getElementById('groupSuggestions');
+
+    if (suggestions && suggestions.length > 0) {
+      suggestionsContainer.classList.remove('hidden');
+      suggestionsList.innerHTML = suggestions.slice(0, 3).map(suggestion => `
+        <button class="w-full text-left px-3 py-2 text-sm bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600">
+          <div class="font-medium text-gray-700 dark:text-gray-300">
+            ${suggestion.domains.join(', ')}
+          </div>
+          <div class="text-xs text-gray-500 dark:text-gray-400">
+            Confidence: ${(suggestion.confidence * 100).toFixed(0)}%
+          </div>
+        </button>
+      `).join('');
+    } else {
+      suggestionsContainer.classList.add('hidden');
+    }
+  } catch (error) {
+    console.error('Error updating analytics:', error);
   }
 } 
