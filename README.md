@@ -7,7 +7,7 @@
 A powerful Chrome extension for efficiently organizing and managing your browser tabs with smart grouping and customizable settings.
 
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/[extension-id]?style=flat-square)](https://chrome.google.com/webstore/detail/[extension-id])
-[![GitHub license](https://img.shields.io/github/license/Lgsarius/tab-organizer?style=flat-square)](https://github.com/Lgsarius/tab-organizer/blob/main/LICENSE)
+[![GitHub license](https://img.shields.io/github/license/Lgsarius/tab-organizer?style=flat-square)](MIT)
 
 </div>
 
